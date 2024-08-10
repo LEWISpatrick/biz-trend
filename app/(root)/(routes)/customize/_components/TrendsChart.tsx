@@ -72,7 +72,7 @@ const TrendsChart: React.FC<TrendsChartProps> = ({ data, selectedPeriod }) => {
     };
 
     return (
-        <div className='min-w-max min-h-max'>
+        <div className='min-w-sm'>
             <Bar data={chartData} options={options} />
         </div>
     );

@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     try {
         const prompt = `
             Given the project idea: "${projectIdea}", the project description: "${description}", and the trends data: ${JSON.stringify(trendsData)}, 
-            generate a detailed report rating the project out of 10 based on its potential success and the percentage likelihood of people paying for it and how much they would pay for such item, have them in different sections. 
+            generate a detailed report rating the project out of 10 based on its potential success and the percentage likelihood of people paying for it and how much they would pay for such item, have them in different sections and also write it in Markdown . 
             Also, create a catchy Twitter post to ask the community for their opinion on the idea. 
             Please ensure the report is detailed and the tweet is engaging. 
             

@@ -50,7 +50,7 @@ export const Header = () => {
             Build your SaaS faster with our fully customizable template.
           </p>
           <div className="flex justify-center lg:justify-start items-center mt-4">
-            <Link href="/overview">
+            <Link href="/trend">
               <Button className="gap-2">
                 <Sparkles className="h-5 w-5" />
                 <span>Get Started</span>

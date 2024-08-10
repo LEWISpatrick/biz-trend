@@ -3,14 +3,17 @@ import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import TrendsChart from '.././customize/_components/TrendsChart'; // Adjust the import path as necessary
 import { Button } from '@/components/ui/button';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const Page = () => {
     const [projectIdea, setProjectIdea] = useState('');
     const [description, setDescription] = useState('');
     const [trendsData, setTrendsData] = useState<any>(null); // Adjust type if necessary
-    const [selectedPeriod, setSelectedPeriod] = useState(''); // Add state for selected period
+    const [selectedPeriod, setSelectedPeriod] = useState('');
     const [report, setReport] = useState('');
     const [tweet, setTweet] = useState('');
+    const [isLoading, setIsLoading] = useState(false); // New state for loading
 
     const handleDescribe = () => {
         toast.success('🔥 Describe Your Project Well!?');
@@ -22,6 +25,7 @@ const Page = () => {
             return;
         }
 
+        setIsLoading(true); // Start loading
         toast.loading('💻 Doing Research...');
 
         try {
@@ -46,12 +50,14 @@ const Page = () => {
             toast.dismiss(); // Dismiss loading toast
             toast.success('✅ Research Complete!');
 
-            setTrendsData(data); // Set the entire data object
-            setReport(reportData.report); // Set the generated report
-            setTweet(reportData.tweet); // Set the generated tweet
+            setTrendsData(data);
+            setReport(reportData.report);
+            setTweet(reportData.tweet);
 
         } catch (error) {
             toast.error('❌ Failed to validate project');
+        } finally {
+            setIsLoading(false); // End loading
         }
     };
 
@@ -59,8 +65,17 @@ const Page = () => {
         setSelectedPeriod(event.target.value);
     };
 
+    const handleTweetClick = () => {
+        if (tweet) {
+            const encodedTweet = encodeURIComponent(tweet);
+            window.open(`https://x.com/intent/post?text=${encodedTweet}`, '_blank');
+        } else {
+            toast.error('❌ No tweet generated');
+        }
+    };
+
     return (
-        <div className='flex flex-col space-y-4 min-w-fit p-4'>
+        <div className='flex flex-col space-y-4 min-w-sm p-4'>
             <div>
                 <h2 className="text-lg font-bold mt-4">Enter Your Project Idea</h2>
                 <textarea
@@ -99,7 +114,11 @@ const Page = () => {
                 </select>
             </div>
 
-            <Button onClick={handleValidation} className=" font-bold py-2 px-4 rounded">
+            <Button 
+                onClick={handleValidation} 
+                className="font-bold py-2 px-4 rounded"
+                disabled={isLoading} // Disable button while loading
+            >
                 Validate
             </Button>
 
@@ -113,14 +132,24 @@ const Page = () => {
             {report && (
                 <div className='mt-4'>
                     <h3 className='text-md font-bold'>Generated Report:</h3>
-                    <p>{report}</p>
+                    <div className='prose'>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{report}</ReactMarkdown>
+                    </div>
                 </div>
             )}
 
             {tweet && (
                 <div className='mt-4'>
                     <h3 className='text-md font-bold'>Generated Tweet:</h3>
-                    <p>{tweet}</p>
+                    <div className='prose'>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{tweet}</ReactMarkdown>
+                    </div>
+                    <Button 
+                        onClick={handleTweetClick} 
+                        disabled={isLoading} // Disable button while loading
+                    >
+                        Tweet It!
+                    </Button>
                 </div>
             )}
         </div>
