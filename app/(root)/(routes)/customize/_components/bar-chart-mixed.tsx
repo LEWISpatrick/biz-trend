@@ -18,23 +18,23 @@ import {
   ChartTooltipContent
 } from '@/components/ui/chart'
 const chartData = [
-  { browser: 'chrome', visitors: 275, fill: 'var(--color-chrome)' },
-  { browser: 'safari', visitors: 200, fill: 'var(--color-safari)' },
-  { browser: 'firefox', visitors: 187, fill: 'var(--color-firefox)' },
-  { browser: 'edge', visitors: 173, fill: 'var(--color-edge)' },
-  { browser: 'other', visitors: 90, fill: 'var(--color-other)' }
+  { browser: 'Banana', visitors: 275, fill: 'var(--color-chrome)' },
+  { browser: 'Banana Tree', visitors: 200, fill: 'var(--color-safari)' },
+  { browser: 'das', visitors: 187, fill: 'var(--color-firefox)' },
+  { browser: 'dsa', visitors: 173, fill: 'var(--color-edge)' },
+  { browser: 'otdsaher', visitors: 90, fill: 'var(--color-other)' }
 ]
 
 const chartConfig = {
   visitors: {
-    label: 'Visitors'
+    label: 'Searches/Month '
   },
   chrome: {
-    label: 'Chrome',
+    label: 'Banana',
     color: 'hsl(var(--chart-1))'
   },
   safari: {
-    label: 'Safari',
+    label: 'Banana Tree',
     color: 'hsl(var(--chart-2))'
   },
   firefox: {

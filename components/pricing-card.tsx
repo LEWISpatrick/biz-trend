@@ -9,39 +9,16 @@ import { useRouter } from 'next/navigation'
 
 // Update Tiers Here
 export const tiers = [
+  
   {
-    name: 'Your Competitor Name',
-    price: '18.99',
+    name: 'SaaS Validator Kit',
+    priceBefore: '$9.99/Month',
+    price: '0.99',
     features: [
-      'Feature 1',
-      'Feature 2',
-      'Feature 3',
-      'Feature 4',
-      'Feature 5',
-      'Feature 6',
-      'Feature 7',
-      'Feature 8',
-      'Feature 9',
-      'Feature 10'
-    ],
-    cta: 'Get Started',
-    yourProduct: false
-  },
-  {
-    name: 'Your Product Name',
-    priceBefore: '$19.99',
-    price: '8.99',
-    features: [
-      'Feature 1',
-      'Feature 2',
-      'Feature 3',
-      'Feature 4',
-      'Feature 5',
-      'Feature 6',
-      'Feature 7',
-      'Feature 8',
-      'Feature 9',
-      'Feature 10'
+      'Test Your SaaS Products Unlimited Times',
+      'Get Unlimited Reports',
+      'Get Unlimited Tweets Generated for your SaaS',
+     
     ],
     cta: 'Get Started',
     yourProduct: true
@@ -117,7 +94,7 @@ export const PricingCard = () => {
                     {tier.priceBefore}
                   </span>
                 ) : null}
-                <span className="text-4xl font-bold">${tier.price}</span> /month
+                <span className="text-4xl font-bold">${tier.price}</span> 
               </div>
               <ul className="mt-4 space-y-2.5">
                 {tier.features.map((feature, index) => (
@@ -146,6 +123,7 @@ export const PricingCard = () => {
                 <Sparkle className="ml-1 h-4 w-4" />
               </Button>
             </div>
+            <span className='underline text-center mt-2'>Pay Once Use Forever</span>
           </div>
         ))}
       </div>

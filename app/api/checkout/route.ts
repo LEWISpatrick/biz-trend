@@ -11,51 +11,79 @@ export async function POST(req: Request) {
       return new NextResponse('Unauthorized', { status: 401 })
     }
 
-    const userSubscription = await db.userSubscription.findUnique({
+    const existingStripeCustomer = await db.stripeCustomer.findUnique({
       where: {
         userId: user.user.id
       }
     })
 
-    if (userSubscription && userSubscription.stripeCustomerId) {
-      const stripeSession = await stripe.billingPortal.sessions.create({
-        customer: userSubscription.stripeCustomerId,
-        return_url: process.env.APP_URL
-      })
+    let stripeCustomerId: string
 
-      return new NextResponse(JSON.stringify({ url: stripeSession.url }))
+    if (existingStripeCustomer) {
+      stripeCustomerId = existingStripeCustomer.stripeCustomerId
+    } else {
+      const customer = await stripe.customers.create({
+        email: user.user.email!
+      })
+      await db.stripeCustomer.create({
+        data: {
+          userId: user.user.id,
+          stripeCustomerId: customer.id
+        }
+      })
+      stripeCustomerId = customer.id
     }
+
+    const stripePurchase = await db.purchase.findFirst({
+      where: {
+        userId: user.user.id
+      }
+    })
+
+    if (stripePurchase) {
+      return new NextResponse('Purchase already exists', { status: 400 })
+    }
+
+    const coupon = await stripe.coupons.create({
+      // make it dollars off
+      amount_off: 899, // 70% off
+      currency: 'USD',
+      duration: 'once',
+      name: 'First 5 Clients (3 Left) 8.99',
+    });
 
     const stripeSession = await stripe.checkout.sessions.create({
       success_url: process.env.APP_URL,
       cancel_url: process.env.APP_URL,
       payment_method_types: ['card'],
-
-      mode: 'subscription',
+      mode: 'payment',
       billing_address_collection: 'auto',
-      customer_email: user?.user.email!,
-
+      customer: stripeCustomerId,
+      discounts: [
+        {
+          coupon: coupon.id,
+        },
+      ],
       line_items: [
         {
           price_data: {
             currency: 'USD',
             product_data: {
-              name: 'Your SaaS Subscription Name',
-              description: 'Saas Subscription Description'
+              name: 'SaaS Validator Kit',
+              description: 'Ultimate package SaaS Validator Kit',
             },
-            // cost (change this to the price of your product)
-            unit_amount: 899,
-            recurring: {
-              interval: 'month'
-            }
+            unit_amount: 999, 
           },
-          quantity: 1
-        }
+          quantity: 1,
+        },
+        
       ],
       metadata: {
-        userId: user.user.id
-      }
+        userId: user.user.id,
+        stripeCustomerId: stripeCustomerId,
+      },
     })
+
     return new NextResponse(JSON.stringify({ url: stripeSession.url }))
   } catch (error) {
     console.log('[STRIPE_GET]', error)
